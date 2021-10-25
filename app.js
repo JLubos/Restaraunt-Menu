@@ -31,27 +31,83 @@ const menu = [
         desc: `I'm baby woke milkshake wolf bitter live-edge
         blue bottle, hammock freegan copper mug whatever cold pressed`,
 
+    },
+
+    {
+        id: 4,
+        title: "steak dinner",
+        category: "dinner",
+        price: 39.99,
+        img: "./images/item-4.jpeg",
+        desc: `I'm baby woke milkshake wolf bitter live-edge
+        blue bottle, hammock freegan copper mug whatever cold pressed`,
+
     }
 
 
 ];
 
-const sectionCenter = document.querySelector('.section-center');
+const sectionCenter = document.querySelector(".section-center");
+const btnContainer = document.querySelector(".btn-container");
 
+
+
+//load items
 window.addEventListener('DOMContentLoaded', function(){
-    let displayMenu = menu.map(function(item){
+    displayMenuItems(menu);
+    displayMenuButtons(); 
+});
+
+function displayMenuItems(menuItems){
+    let displayMenu = menuItems.map(function(item){
         return `<article class="menu-item">
-        <img src="menu-item.jpeg" class="photo" alt="menu item"/>
+        <img src=${item.img} class="photo" alt=${item.title}/>
         <div class="item-info">
             <header>
-                <h4>buttermilk pancakes</h4>
-                <h4 class="price">$15</h4>
+                <h4>${item.title}</h4>
+                <h4 class="price">$${item.price}</h4>
             </header>
-            <p class="item-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci hic illo repellat distinctio porro id voluptatum dolores possimus sapiente alias atque, sunt explicabo, sint voluptas accusamus doloribus. Autem, quibusdam non.</p>
+            <p class="item-text">${item.desc}</p>
         </div>
-    </article>`
+    </article>`;
 
     });
-    console.log(displayMenu);
-    
-});
+
+    displayMenu = displayMenu.join("");
+    sectionCenter.innerHTML = displayMenu;
+
+
+}
+
+function displayMenuButtons() {
+    const categories = menu.reduce(function(values,item){
+        if(!values.includes(item.category)){
+        values.push(item.category);
+        }
+        return values;
+    },['all']);
+    const categoryBtns = categories.map(function(category){
+        return `<button class="filter-btn" type="button" data-id=${category}>Al${category}</button>`
+    }).join("");
+    btnContainer.innerHTML = categoryBtns;
+    const filterBtns = btnContainer.querySelectorAll(".filter-btn");
+    //filter items
+    filterBtns.forEach(function(btn){
+        btn.addEventListener("click", function(e){
+            const category = e.currentTarget.dataset.id;
+            const menuCategory = menu.filter(function(menuItem){
+                if(menuItem.category === category){
+                    return menuItem;
+                }
+                
+            });
+            console.log(menuCategory);
+            if(category === 'all'){
+                displayMenuItems(menu);
+            }else{
+                displayMenuItems(menuCategory);
+            }
+        });
+    });
+
+}
